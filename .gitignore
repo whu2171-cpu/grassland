@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Large geospatial and remote-sensing data
+*.tif
+*.tiff
+*.img
+*.vrt
+*.ovr
+*.aux.xml
+*.jp2
+*.hdf
+*.nc
+*.grib
+*.grb
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+
+# Large arrays and model files
+*.npy
+*.npz
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+
+# Office / presentation outputs
+*.pptx
+*.docx
+*.xlsx
+*.xls
+
+# Generated outputs
+outputs/
+tmp/
+temp/
+cache/
+logs/
+
+# Keep small curated result folders trackable by default
+!results/
+!results/tables/
+!results/figures_small/
+
