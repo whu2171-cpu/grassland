@@ -1,0 +1,5 @@
+﻿task,model,label_source,n_train,n_val,features,overall_accuracy,macro_f1
+fvc_ndvi,random_forest,proxy,10500,4500,mean_ndvi,0.9988888888888889,0.998888887928897
+fvc_ndvi,hist_gradient_boosting,proxy,10500,4500,mean_ndvi,0.9982222222222222,0.9982225854664619
+subtype,random_forest,proxy,10500,4500,confidence;dem,0.6697777777777778,0.6699519961614288
+subtype,hist_gradient_boosting,proxy,10500,4500,confidence;dem,0.694,0.6946940297755987

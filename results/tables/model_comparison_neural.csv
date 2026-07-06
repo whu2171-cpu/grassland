@@ -1,0 +1,3 @@
+﻿task,model,label_source,n_train,n_val,features,overall_accuracy,macro_f1
+fvc_ndvi,mlp_prototype,proxy,10500,4500,mean_ndvi,0.9908888888888889,0.9909300213066642
+subtype,mlp_prototype,proxy,10500,4500,confidence;dem,0.5926666666666667,0.5927781603141831

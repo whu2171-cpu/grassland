@@ -1,0 +1,11 @@
+﻿task,label,count
+fvc_ndvi,0,3000
+fvc_ndvi,1,3000
+fvc_ndvi,2,3000
+fvc_ndvi,3,3000
+fvc_ndvi,4,3000
+subtype,0,3000
+subtype,1,3000
+subtype,2,3000
+subtype,3,3000
+subtype,4,3000
