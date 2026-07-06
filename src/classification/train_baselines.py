@@ -7,7 +7,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
-from sklearn.model_selection import train_test_split
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -15,6 +14,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from src.classification.config import load_config
 from src.classification.metrics import classification_metrics, confusion_matrix_df, per_class_metrics_df
+from src.classification.split import train_validation_indices
 
 
 NON_FEATURE_COLUMNS = {"task", "row", "col", "x", "y_coord", "label"}
@@ -42,13 +42,9 @@ def train_one_task(df: pd.DataFrame, task: str, config: dict, table_dir: Path) -
     x = x_df.fillna(x_df.median()).to_numpy()
     y = task_df["label"].to_numpy()
     labels = sorted(np.unique(y).tolist())
-    train_x, val_x, train_y, val_y = train_test_split(
-        x,
-        y,
-        test_size=float(config["split"]["validation_fraction"]),
-        random_state=int(config["sampling"]["seed"]),
-        stratify=y,
-    )
+    train_idx, val_idx, split_name = train_validation_indices(task_df.reset_index(drop=True), config)
+    train_x, val_x = x[train_idx], x[val_idx]
+    train_y, val_y = y[train_idx], y[val_idx]
 
     rf_cfg = config["models"]["random_forest"]
     gb_cfg = config["models"]["gradient_boosting"]
@@ -88,6 +84,7 @@ def train_one_task(df: pd.DataFrame, task: str, config: dict, table_dir: Path) -
                 "label_source": "proxy",
                 "n_train": len(train_y),
                 "n_val": len(val_y),
+                "split": split_name,
                 "features": ";".join(features),
                 "overall_accuracy": metrics["overall_accuracy"],
                 "macro_f1": metrics["macro_f1"],

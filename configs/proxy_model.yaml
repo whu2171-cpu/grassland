@@ -17,7 +17,8 @@ sampling:
 
 split:
   validation_fraction: 0.30
-  mode: "random"
+  mode: "spatial_block"
+  block_size: 2.0
 
 models:
   random_forest:

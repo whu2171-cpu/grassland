@@ -1,3 +1,3 @@
-﻿task,model,label_source,n_train,n_val,features,overall_accuracy,macro_f1
-fvc_ndvi,mlp_prototype,proxy,10500,4500,mean_ndvi,0.9908888888888889,0.9909300213066642
-subtype,mlp_prototype,proxy,10500,4500,confidence;dem,0.5926666666666667,0.5927781603141831
+﻿task,model,label_source,n_train,n_val,split,features,overall_accuracy,macro_f1
+fvc_ndvi,mlp_prototype,proxy,10171,4829,spatial_block_2,mean_ndvi,0.9948229447090495,0.9948027188591743
+subtype,mlp_prototype,proxy,11655,3345,spatial_block_2,confidence;dem;slope;aspect;twi_proxy;2012_ndvi_point;2013_ndvi_point;2014_ndvi_point;ndvi_time_mean;ndvi_time_min;ndvi_time_max;ndvi_time_std;ndvi_time_range,0.8998505231689088,0.9176446090198821

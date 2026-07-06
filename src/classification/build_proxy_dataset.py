@@ -17,6 +17,7 @@ from src.classification.raster_utils import (
     pixel_centers,
     quantile_classes,
     read_single_band,
+    sample_dem_terrain_at_points,
     sample_raster_at_points,
     sample_feature_values,
     valid_mask,
@@ -67,6 +68,28 @@ def build_subtype_samples(config: dict) -> pd.DataFrame:
     dem_values = sample_raster_at_points(config["paths"]["dem"], xs, ys, label_profile["crs"])
     if dem_values is not None:
         feature_df["dem"] = dem_values
+    terrain_df = sample_dem_terrain_at_points(config["paths"]["dem"], xs, ys, label_profile["crs"])
+    if terrain_df is not None:
+        feature_df = pd.concat([feature_df.reset_index(drop=True), terrain_df.reset_index(drop=True)], axis=1)
+    ndvi_series = []
+    for ndvi_path in config["paths"].get("ndvi_candidates", []):
+        path = Path(ndvi_path)
+        if not path.exists():
+            print(f"SKIP subtype NDVI feature missing: {ndvi_path}")
+            continue
+        values = sample_raster_at_points(path, xs, ys, label_profile["crs"])
+        if values is None:
+            continue
+        name = path.stem.lower().replace("-", "_")
+        feature_df[f"{name}_point"] = values
+        ndvi_series.append(values)
+    if ndvi_series:
+        ndvi_stack = np.vstack(ndvi_series).astype("float32")
+        feature_df["ndvi_time_mean"] = np.nanmean(ndvi_stack, axis=0)
+        feature_df["ndvi_time_min"] = np.nanmin(ndvi_stack, axis=0)
+        feature_df["ndvi_time_max"] = np.nanmax(ndvi_stack, axis=0)
+        feature_df["ndvi_time_std"] = np.nanstd(ndvi_stack, axis=0)
+        feature_df["ndvi_time_range"] = feature_df["ndvi_time_max"] - feature_df["ndvi_time_min"]
     df = pd.DataFrame({"task": "subtype", "row": rows, "col": cols, "x": xs, "y_coord": ys, "label": y})
     return pd.concat([df, feature_df.reset_index(drop=True)], axis=1)
 

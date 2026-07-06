@@ -1,5 +1,5 @@
-﻿task,model,label_source,n_train,n_val,features,overall_accuracy,macro_f1
-fvc_ndvi,random_forest,proxy,10500,4500,mean_ndvi,0.9988888888888889,0.998888887928897
-fvc_ndvi,hist_gradient_boosting,proxy,10500,4500,mean_ndvi,0.9982222222222222,0.9982225854664619
-subtype,random_forest,proxy,10500,4500,confidence;dem,0.6697777777777778,0.6699519961614288
-subtype,hist_gradient_boosting,proxy,10500,4500,confidence;dem,0.694,0.6946940297755987
+﻿task,model,label_source,n_train,n_val,split,features,overall_accuracy,macro_f1
+fvc_ndvi,random_forest,proxy,10171,4829,spatial_block_2,mean_ndvi,0.999378753365086,0.9993529435659079
+fvc_ndvi,hist_gradient_boosting,proxy,10171,4829,spatial_block_2,mean_ndvi,0.9931662870159453,0.9931075294795164
+subtype,random_forest,proxy,11655,3345,spatial_block_2,confidence;dem;slope;aspect;twi_proxy;2012_ndvi_point;2013_ndvi_point;2014_ndvi_point;ndvi_time_mean;ndvi_time_min;ndvi_time_max;ndvi_time_std;ndvi_time_range,0.8914798206278027,0.9118995410078078
+subtype,hist_gradient_boosting,proxy,11655,3345,spatial_block_2,confidence;dem;slope;aspect;twi_proxy;2012_ndvi_point;2013_ndvi_point;2014_ndvi_point;ndvi_time_mean;ndvi_time_min;ndvi_time_max;ndvi_time_std;ndvi_time_range,0.8935724962630792,0.9139239978075256

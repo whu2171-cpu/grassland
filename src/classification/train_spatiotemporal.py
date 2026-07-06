@@ -6,7 +6,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
@@ -18,6 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from src.classification.config import load_config
 from src.classification.metrics import classification_metrics, confusion_matrix_df, per_class_metrics_df
+from src.classification.split import train_validation_indices
 from src.classification.train_baselines import feature_columns
 
 
@@ -33,13 +33,9 @@ def train_mlp_for_task(df: pd.DataFrame, task: str, config: dict, table_dir: Pat
     x = x_df.fillna(x_df.median()).to_numpy()
     y = task_df["label"].to_numpy()
     labels = sorted(np.unique(y).tolist())
-    train_x, val_x, train_y, val_y = train_test_split(
-        x,
-        y,
-        test_size=float(config["split"]["validation_fraction"]),
-        random_state=int(config["sampling"]["seed"]),
-        stratify=y,
-    )
+    train_idx, val_idx, split_name = train_validation_indices(task_df.reset_index(drop=True), config)
+    train_x, val_x = x[train_idx], x[val_idx]
+    train_y, val_y = y[train_idx], y[val_idx]
 
     mlp_cfg = config["models"]["mlp"]
     model = make_pipeline(
@@ -71,6 +67,7 @@ def train_mlp_for_task(df: pd.DataFrame, task: str, config: dict, table_dir: Pat
         "label_source": "proxy",
         "n_train": len(train_y),
         "n_val": len(val_y),
+        "split": split_name,
         "features": ";".join(features),
         "overall_accuracy": metrics["overall_accuracy"],
         "macro_f1": metrics["macro_f1"],
