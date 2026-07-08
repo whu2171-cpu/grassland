@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from pandas.errors import EmptyDataError
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
@@ -85,7 +86,10 @@ def main() -> None:
     for name in ["proxy_samples_subtype.csv", "proxy_samples_fvc_ndvi.csv"]:
         path = table_dir / name
         if path.exists():
-            frames.append(pd.read_csv(path))
+            try:
+                frames.append(pd.read_csv(path))
+            except EmptyDataError:
+                continue
     if not frames:
         raise FileNotFoundError("No proxy sample tables found. Run build_proxy_dataset.py first.")
     df = pd.concat(frames, ignore_index=True)

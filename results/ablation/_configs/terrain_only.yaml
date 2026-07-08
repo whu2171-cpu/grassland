@@ -1,0 +1,41 @@
+paths:
+  output_dir: D:\草地遥感\中期\grassland-remote-sensing\results\ablation\terrain_only
+  subtype_label: D:/草地遥感/result/汇报/260513/output/Subtype_Classification_Full.tif
+  subtype_confidence: D:/草地遥感/result/汇报/260513/output/Subtype_Confidence_Full.tif
+  dem: D:/草地遥感/result/汇报/260513/dem/Mongolian_Plateau_DEM.tif
+  ndvi_candidates: []
+  ndvi_groups: {}
+  soilgrids: {}
+  era5:
+    features: {}
+sampling:
+  seed: 42
+  max_per_class: 3000
+  confidence_threshold: 0.95
+  fallback_confidence_threshold: 0.9
+  fvc_ndvi_classes: 5
+split:
+  validation_fraction: 0.3
+  mode: spatial_block
+  block_size: 2.0
+models:
+  random_forest:
+    n_estimators: 200
+    max_depth: 20
+    random_state: 42
+  gradient_boosting:
+    max_iter: 200
+    learning_rate: 0.08
+    random_state: 42
+  mlp:
+    hidden_layer_sizes:
+    - 128
+    - 64
+    max_iter: 200
+    random_state: 42
+feature_flags:
+  terrain: true
+  ndvi_candidates: false
+  ndvi_groups: false
+  soilgrids: false
+  era5: false

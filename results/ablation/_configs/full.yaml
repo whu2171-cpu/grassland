@@ -1,0 +1,139 @@
+paths:
+  output_dir: D:\草地遥感\中期\grassland-remote-sensing\results\ablation\full
+  subtype_label: D:/草地遥感/result/汇报/260513/output/Subtype_Classification_Full.tif
+  subtype_confidence: D:/草地遥感/result/汇报/260513/output/Subtype_Confidence_Full.tif
+  dem: D:/草地遥感/result/汇报/260513/dem/Mongolian_Plateau_DEM.tif
+  ndvi_candidates:
+  - D:/草地遥感/result/tiff/2012_ndvi.tif
+  - D:/草地遥感/result/tiff/2013_ndvi.tif
+  - D:/草地遥感/result/tiff/2014_ndvi.tif
+  ndvi_groups:
+    long_1981_2014:
+      directory: D:/草地遥感/result/tiff
+      pattern: '{year}_ndvi.tif'
+      start_year: 1981
+      end_year: 2014
+    recent_2014_2024:
+      directory: D:/草地遥感/result/1981-2024年间tiff源文件
+      pattern: '{year}.tif'
+      start_year: 2014
+      end_year: 2024
+  soilgrids:
+    soil_sand_0_5cm: D:/草地遥感/result/汇报/0604/download/soilgrids/sand_0-5cm_mean.tif
+    soil_silt_0_5cm: D:/草地遥感/result/汇报/0604/download/soilgrids/silt_0-5cm_mean.tif
+    soil_clay_0_5cm: D:/草地遥感/result/汇报/0604/download/soilgrids/clay_0-5cm_mean.tif
+    soil_soc_0_5cm: D:/草地遥感/result/汇报/0604/download/soilgrids/soc_0-5cm_mean.tif
+    soil_bdod_0_5cm: D:/草地遥感/result/汇报/0604/download/soilgrids/bdod_0-5cm_mean.tif
+  era5:
+    years:
+    - 2012
+    - 2013
+    - 2014
+    months:
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    features:
+      era5_t2m_mean_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_2m_temperature_2000_2024.nc
+        variable: t2m
+        reducer: mean
+      era5_tp_sum_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_total_precipitation_2000_2024.nc
+        variable: tp
+        reducer: sum
+      era5_vpd_mean_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_vpd_2000_2024.nc
+        variable: vpd
+        reducer: mean
+      era5_swvl1_mean_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_volumetric_soil_water_layer_1_2000_2024.nc
+        variable: swvl1
+        reducer: mean
+      era5_swvl2_mean_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_volumetric_soil_water_layer_2_2000_2024.nc
+        variable: swvl2
+        reducer: mean
+      era5_ssr_mean_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_surface_net_solar_radiation_2000_2024.nc
+        variable: ssr
+        reducer: mean
+      era5_evap_sum_gs_2012_2014:
+        path: E:/1/era5/era5_monthly_total_evaporation_2000_2024.nc
+        variable: e
+        reducer: sum
+      era5_t2m_mean_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_2m_temperature_2000_2024.nc
+        variable: t2m
+        reducer: mean
+        start_year: 2000
+        end_year: 2024
+      era5_tp_sum_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_total_precipitation_2000_2024.nc
+        variable: tp
+        reducer: sum
+        start_year: 2000
+        end_year: 2024
+      era5_vpd_mean_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_vpd_2000_2024.nc
+        variable: vpd
+        reducer: mean
+        start_year: 2000
+        end_year: 2024
+      era5_swvl1_mean_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_volumetric_soil_water_layer_1_2000_2024.nc
+        variable: swvl1
+        reducer: mean
+        start_year: 2000
+        end_year: 2024
+      era5_swvl2_mean_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_volumetric_soil_water_layer_2_2000_2024.nc
+        variable: swvl2
+        reducer: mean
+        start_year: 2000
+        end_year: 2024
+      era5_ssr_mean_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_surface_net_solar_radiation_2000_2024.nc
+        variable: ssr
+        reducer: mean
+        start_year: 2000
+        end_year: 2024
+      era5_evap_sum_gs_2000_2024:
+        path: E:/1/era5/era5_monthly_total_evaporation_2000_2024.nc
+        variable: e
+        reducer: sum
+        start_year: 2000
+        end_year: 2024
+sampling:
+  seed: 42
+  max_per_class: 3000
+  confidence_threshold: 0.95
+  fallback_confidence_threshold: 0.9
+  fvc_ndvi_classes: 5
+split:
+  validation_fraction: 0.3
+  mode: spatial_block
+  block_size: 2.0
+models:
+  random_forest:
+    n_estimators: 200
+    max_depth: 20
+    random_state: 42
+  gradient_boosting:
+    max_iter: 200
+    learning_rate: 0.08
+    random_state: 42
+  mlp:
+    hidden_layer_sizes:
+    - 128
+    - 64
+    max_iter: 200
+    random_state: 42
+feature_flags:
+  terrain: true
+  ndvi_candidates: true
+  ndvi_groups: true
+  soilgrids: true
+  era5: true

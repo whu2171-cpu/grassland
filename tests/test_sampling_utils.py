@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from src.classification.raster_utils import balanced_indices, quantile_classes, terrain_metrics_from_window
+from src.classification.raster_utils import balanced_indices, quantile_classes, terrain_metrics_from_window, _nearest_indices
+from src.classification.build_proxy_dataset import temporal_trend
 from src.classification.split import spatial_block_ids, train_validation_indices
 
 
@@ -69,3 +70,28 @@ def test_terrain_metrics_from_window_returns_positive_slope():
     assert slope > 0
     assert 0 <= aspect < 360
     assert np.isfinite(twi_proxy)
+
+
+def test_nearest_indices_handles_descending_coordinates():
+    values = np.array([55.0, 54.9, 54.8, 54.7])
+    targets = np.array([54.92, 54.74])
+
+    idx = _nearest_indices(values, targets)
+
+    assert idx.tolist() == [1, 3]
+
+
+def test_temporal_trend_estimates_per_point_slope():
+    values = np.array(
+        [
+            [1.0, 5.0],
+            [2.0, 5.0],
+            [3.0, 5.0],
+        ],
+        dtype="float32",
+    )
+
+    trend = temporal_trend(values, [2000, 2001, 2002])
+
+    assert np.isclose(trend[0], 1.0)
+    assert np.isclose(trend[1], 0.0)

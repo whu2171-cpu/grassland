@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.windows import Window
+import xarray as xr
 
 
 def read_single_band(path: str | Path) -> tuple[np.ndarray, dict]:
@@ -124,3 +125,49 @@ def sample_dem_terrain_at_points(
                 y_resolution_m,
             )
     return pd.DataFrame({"slope": slope, "aspect": aspect, "twi_proxy": twi_proxy})
+
+
+def _nearest_indices(values: np.ndarray, targets: np.ndarray) -> np.ndarray:
+    values = np.asarray(values, dtype="float64")
+    targets = np.asarray(targets, dtype="float64")
+    if values[0] <= values[-1]:
+        positions = np.searchsorted(values, targets)
+        positions = np.clip(positions, 1, len(values) - 1)
+        left = values[positions - 1]
+        right = values[positions]
+        return np.where(np.abs(targets - left) <= np.abs(targets - right), positions - 1, positions)
+    reversed_idx = _nearest_indices(values[::-1], targets)
+    return len(values) - 1 - reversed_idx
+
+
+def sample_netcdf_temporal_feature(
+    path: str | Path,
+    variable: str,
+    xs: np.ndarray,
+    ys: np.ndarray,
+    years: list[int],
+    months: list[int] | None,
+    reducer: str,
+) -> np.ndarray:
+    with xr.open_dataset(path) as ds:
+        data = ds[variable]
+        time_name = "valid_time" if "valid_time" in data.dims else "time"
+        lat_name = "latitude" if "latitude" in data.dims else "lat"
+        lon_name = "longitude" if "longitude" in data.dims else "lon"
+        data = data.sel({time_name: data[time_name].dt.year.isin(years)})
+        if months:
+            data = data.sel({time_name: data[time_name].dt.month.isin(months)})
+        data = data.squeeze(drop=True)
+        lat_idx = _nearest_indices(data[lat_name].to_numpy(), ys)
+        lon_idx = _nearest_indices(data[lon_name].to_numpy(), xs)
+        sampled = data.isel({lat_name: xr.DataArray(lat_idx, dims="points"), lon_name: xr.DataArray(lon_idx, dims="points")})
+        arr = sampled.to_numpy().astype("float32")
+    if reducer == "mean":
+        return np.nanmean(arr, axis=0).astype("float32")
+    if reducer == "sum":
+        return np.nansum(arr, axis=0).astype("float32")
+    if reducer == "min":
+        return np.nanmin(arr, axis=0).astype("float32")
+    if reducer == "max":
+        return np.nanmax(arr, axis=0).astype("float32")
+    raise ValueError(f"Unsupported reducer: {reducer}")
